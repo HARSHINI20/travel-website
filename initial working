@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Website</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+      background-color: #f0f8ff;
+    }
+    .root {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    nav a {
+      text-decoration: none;
+      color: white;
+    }
+    nav a.active {
+      color: #ff7f50;
+    }
+    .stars {
+      color: gold;
+      font-size: 1em;
+    }
+    .navbar {
+      padding: 20px;
+      background-color: #333;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar .logo {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .navbar .menu {
+      display: flex;
+      gap: 15px;
+    }
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      transition: all 0.3s ease;
+    }
+    .navbar a:hover {
+      background-color: #ff7f50;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #ff7f50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: transform 0.2s ease;
+    }
+    button:hover {
+      transform: translateY(-5px);
+    }
+    .search-field {
+      display: flex;
+      gap: 10px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      justify-content: center;
+      align-items: center;
+    }
+    .search-field input {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .destination {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      text-align: center;
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .destination:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .destination img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .destination h3 {
+      margin: 10px 0;
+    }
+    .destination p {
+      padding: 0 10px;
+    }
+    .destination a {
+      display: block;
+      margin: 10px 0;
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+    .destinations {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      background-color: #e6f7ff;
+    }
+    footer {
+      padding: 20px;
+      text-align: center;
+      background-color: #333;
+      color: white;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+    }
+    .footer-links a:hover {
+      color: #ff7f50;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+  <script type="text/babel">
+    const Navbar = () => (
+      <nav className="navbar">
+        <div className="logo">TravelSite</div>
+        <div className="menu">
+          <a href="#">Home</a>
+          <a href="#destinations">Destinations</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <button>Book Now</button>
+      </nav>
+    );
+
+    const SearchField = () => (
+      <div className="search-field">
+        <input type="text" placeholder="Search destination" />
+        <input type="date" />
+        <div>
+          <label htmlFor="price-slider">Price Range</label>
+          <input id="price-slider" type="range" min="100" max="5000" step="100" style={{ width: '150px' }} onChange={(e) => document.getElementById('price-value').innerText = `₹${e.target.value}`} />
+          <span id="price-value">₹100</span>
+        </div>
+        <button>Search</button>
+      </div>
+    );
+
+    const StarRating = ({ rating }) => {
+      const stars = [];
+      for (let i = 0; i < 5; i++) {
+        stars.push(
+          <span key={i} className="stars">
+            {i < rating ? '★' : '☆'}
+          </span>
+        );
+      }
+      return <div>{stars}</div>;
+    };
+
+    const Destination = ({ name, description, image, locationLink, rating, cost }) => (
+      <div className="destination">
+        <img src={image} alt={name} />
+        <h3>{name}</h3>
+        <p>{description}</p>
+        <StarRating rating={rating} />
+        <p><strong>Cost:</strong> ₹{cost}</p>
+        <a href={locationLink} target="_blank">View on Map</a>
+      </div>
+    );
+
+    const Destinations = () => (
+      <section id="destinations" className="destinations">
+        {[  
+          { name: 'Paris', description: 'The City of Light awaits you with its charm and elegance.', image: 'https://upload.wikimedia.org/wikipedia/commons/a/a8/Tour_Eiffel_Wikimedia_Commons.jpg', locationLink: 'https://goo.gl/maps/6TUPP2U3TE52', rating: 5, cost: 5000 },
+          { name: 'Bali', description: 'Experience tropical paradise and serene beaches.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Pura_Taman_Ayun_terletak_di_Mengwi%2C_Bali.jpg/800px-Pura_Taman_Ayun_terletak_di_Mengwi%2C_Bali.jpg?20210829051613', locationLink: 'https://goo.gl/maps/V3t4Zk5K8ns', rating: 4, cost: 3500 },
+          { name: 'New York', description: 'The city that never sleeps, full of excitement and adventure.', image: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Manhattan_Bridge_in_New_York_City_in_the_dark.jpg', locationLink: 'https://goo.gl/maps/3D7HY2ZDC7y', rating: 4.5, cost: 6000 },
+          { name: 'Sydney', description: 'A vibrant city with iconic landmarks like the Opera House and Harbour Bridge.', image: 'https://upload.wikimedia.org/wikipedia/commons/a/a6/Sydney_Opera_House_-_Dec_2017.jpg', locationLink: 'https://goo.gl/maps/4XjGJG4ZTZM2', rating: 4.7, cost: 5500 },
+        ].map((destination, index) => (
+          <Destination key={index} {...destination} />
+        ))}
+      </section>
+    );
+
+    const About = () => (
+      <section id="about" style={{ padding: '20px', textAlign: 'center', backgroundColor: '#f9f9f9' }}>
+        <h2>About Us</h2>
+        <p>Welcome to TravelSite! We are dedicated to helping you explore the world's most beautiful destinations with ease and comfort. Our team is passionate about travel and committed to providing exceptional service to make your adventures unforgettable.</p>
+      </section>
+    );
+
+    const Contact = () => (
+      <section id="contact" style={{ padding: '20px', textAlign: 'center', backgroundColor: '#f9f9f9' }}>
+        <h2>Contact Us</h2>
+        <p>Have any questions or need assistance? Feel free to reach out to us!</p>
+        <form style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+          <input type="text" placeholder="Your Name" style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '5px', width: '300px' }} />
+          <input type="email" placeholder="Your Email" style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '5px', width: '300px' }} />
+          <button style={{ padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', cursor: 'pointer', borderRadius: '5px' }}>Submit</button>
+        </form>
+      </section>
+    );
+
+    const Footer = () => (
+      <footer>
+        <div>© 2024 TravelSite</div>
+        <div className="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </footer>
+    );
+
+    const App = () => (
+      <div>
+        <Navbar />
+        <SearchField />
+        <Destinations />
+        <About />
+        <Contact />
+        <Footer />
+      </div>
+    );
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+
